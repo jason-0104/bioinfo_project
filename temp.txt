@@ -1,0 +1,106 @@
+//-------------------------------------------------------------------------------------------------------------------//recursive snp
+void recurs(map<string, vector<link>> reads_on_SNP,vector<string> all_snp ,map<int, bipartition> last_snp,int k)  
+{
+//while(k<all_snp.size()){
+    int j=0;
+    int i=0;
+    map<int, bipartition> now_snp;
+    while(j<reads_on_SNP.at(all_snp.at(k)).size()+1){
+        vector<int>read;
+        bipartition table;
+        table.insert(pair<int, vector<int>>(0,read));
+        table.insert(pair<int, vector<int>>(1,read));
+        now_snp.insert(pair<int,bipartition>(j,table));
+        i=0;
+     
+        while(i<reads_on_SNP.at(all_snp.at(k)).size()){
+            if(reads_on_SNP.at(all_snp.at(k)).at(i).value=='0')
+                now_snp.at(j).at(0).push_back(reads_on_SNP.at(all_snp.at(k)).at(i).read_name);
+            else
+                now_snp.at(j).at(1).push_back(reads_on_SNP.at(all_snp.at(k)).at(i).read_name); 
+           
+
+            i++;
+        }
+        if(j==0){
+            j++;
+            continue;
+        }  
+        else{
+            if((reads_on_SNP.at(all_snp.at(k)).at(j-1).value)=='0'){
+                now_snp.at(j).at(1).push_back(reads_on_SNP.at(all_snp.at(k)).at(j-1).read_name); 
+                int iter=0;
+                while(iter<now_snp.at(j).at(0).size()){
+                    if(now_snp.at(j).at(0).at(iter)==reads_on_SNP.at(all_snp.at(k)).at(j-1).read_name){
+                        now_snp.at(j).at(0).erase(now_snp.at(j).at(0).begin()+iter);
+                        break;
+                    }
+                iter++; 
+                }
+            sort(now_snp.at(j).at(1).begin(),now_snp.at(j).at(1).end());
+            }
+            else{
+                now_snp.at(j).at(0).push_back(reads_on_SNP.at(all_snp.at(k)).at(j-1).read_name); 
+                int iter=0;
+                while(iter<now_snp.at(j).at(1).size()){
+                    if(now_snp.at(j).at(1).at(iter)==reads_on_SNP.at(all_snp.at(k)).at(j-1).read_name){
+                       now_snp.at(j).at(1).erase(now_snp.at(j).at(1).begin()+iter);
+                        break;
+                    }
+                iter++;
+                }
+            sort(now_snp.at(j).at(0).begin(),now_snp.at(j).at(0).end()); 
+            }
+        }
+    j++;
+    }
+
+//k++;
+//// find the samw read
+    int res = compare(reads_on_SNP.at(all_snp.at(k-1)).size(),reads_on_SNP.at(all_snp.at(k)).size());
+    int small, large;                   
+    if(res == reads_on_SNP.at(all_snp.at(k-1)).size()){                 
+        large = k-1;
+        small = k;
+    }
+    else if(res == reads_on_SNP.at(all_snp.at(k)).size()){
+        large = k;
+        small = k-1;   
+    }
+    i = 0;
+    j = 0;
+    vector<int> likelyhood;
+    while(i<reads_on_SNP.at(all_snp.at(small)).size()){
+        if(reads_on_SNP.at(all_snp.at(small)).at(i).read_name==reads_on_SNP.at(all_snp.at(large)).at(j).read_name){
+            likelyhood.push_back(reads_on_SNP.at(all_snp.at(small)).at(i).read_name);
+            i++;
+            j++;
+        }
+        else if(reads_on_SNP.at(all_snp.at(small)).at(i).read_name>reads_on_SNP.at(all_snp.at(large)).at(j).read_name)
+            j++;
+        else
+            i++;
+    }
+    
+    ////print snp
+    i = 0;
+    j = 0;
+    while(i<now_snp.size()){
+        
+        j = 0;
+        while(j<now_snp.at(i).at(0).size()){
+            cout<<now_snp.at(i).at(0).at(j)<<' ';
+            j++;
+        }
+        j = 0;
+        cout<<endl;
+        while(j<now_snp.at(i).at(1).size()){
+            cout<<now_snp.at(i).at(1).at(j)<<' ';
+            j++;
+        }
+        i++;
+        cout<<endl;
+    }
+    
+    
+}
