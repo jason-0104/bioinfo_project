@@ -22,8 +22,8 @@ public:
 };
 class table_record{
 public:
-    map<int,char> read_0_1;
-    int movement_count;
+    unsigned int encode;  // store current partition ex: '0': R1 R2  & '1':R3 R4 by encode
+    int movement_count;      //movement 
 };
 class core{
 public:
@@ -35,6 +35,7 @@ public:
     void partition(int snp_positon,map<int, bipartition> &snp_partition);
     void read();
     void find_same_reads(int now , vector<int> &same_read);
+    void build_table(int now,const vector<int> same,const map<int, bipartition> current_partition,vector<table_record> &table);
 };
 
 
