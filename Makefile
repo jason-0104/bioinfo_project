@@ -1,7 +1,8 @@
-a.out: snp_reading.o partition.o read.o find_same_reads.o build_table.o core.h
-	g++ -g snp_reading.o partition.o read.o find_same_reads.o build_table.o -o a.out
-snp_reading.o:snp_reading.cpp core.h
-	g++ -g -c snp_reading.cpp 
+all: a.out
+a.out: main.o partition.o read.o find_same_reads.o build_table.o core.h
+	g++ -g main.o partition.o read.o find_same_reads.o build_table.o -o a.out
+main.o:main.cpp core.h
+	g++ -g -c main.cpp 
 partition.o:partition.cpp core.h
 	g++ -g -c partition.cpp 
 read.o:read.cpp core.h

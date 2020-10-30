@@ -1,5 +1,16 @@
 #include "core.h"
-void core::build_table(int now,const vector<int> same,const map<int, bipartition> current_partition,vector<table_record> &table){
+unsigned int core::toInt(const string &s){
+    unsigned int n =0; 
+    for (char c : s){
+        if(c=='\0')
+            break;
+        n = (n << 1) |  // Shift the current set of bits to the left one bit
+        (c - '0');
+    }
+    return n;
+}
+// flag is to control build table mode
+void core::build_table(int now,const vector<int> same,const map<int, bipartition> current_partition, map<unsigned int ,int> &table,int flag, const map<unsigned int ,int> &previous_table ){
     string snp_pos = all_snp.at(now);
     int i =0;
     while (i < current_partition.size()){
@@ -69,9 +80,26 @@ void core::build_table(int now,const vector<int> same,const map<int, bipartition
             }
             b++;
         }
-        unsigned int encode = stoi(temp);
-        table.at(i).encode = encode;
-        //cout<<temp<<endl;
+        temp.push_back('\0');
+        cout<<temp<<endl;
+        int movement_count = 0;
+        if(i != 0)
+            movement_count += 1;
+        unsigned key = toInt(temp);
+        if(flag != 0) {
+            //previous_table
+            if ( previous_table.find(key) == previous_table.end() ) {
+                // not found
+                table.insert(pair<unsigned int , int>(key,-1));
+            } 
+            else {
+                // found
+                table.at(key) += movement_count;
+            }
+        }
+        else{
+            table.insert(pair<unsigned int , int>(key,movement_count));
+        }
         i++;
     }
     
