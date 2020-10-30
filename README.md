@@ -1,4 +1,4 @@
 # bioinformaitcs project
 
-## topic:
-    improve core algroithm performace of phasing genomic variants
+## topic
+    To improve core algroithm performace of phasing genomic variants
