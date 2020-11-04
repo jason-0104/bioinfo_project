@@ -1,24 +1,17 @@
 #include "core.h"
-unsigned int core::toInt(const string &s){
-    unsigned int n =0; 
-    for (char c : s){
-        if(c=='\0')
-            break;
-        n = (n << 1) |  // Shift the current set of bits to the left one bit
-        (c - '0');
-    }
-    return n;
-}
 // flag is to control build table mode
-void core::build_table(int now,const vector<int> same,const map<int, bipartition> current_partition, map<unsigned int ,int> &table,int flag, const map<unsigned int ,int> &previous_table ){
+void core::build_table(int now,const vector<int> same,const map<int, bipartition> current_partition, map<string ,int> &table,map<int, int> &current_snp_movement,map<int,string> &encode_on_partition , map<string, int> &encode_on_partition_inverse){
     string snp_pos = all_snp.at(now);
     int i =0;
+    cout<<"size "<<(current_partition.at(0).at(0).size())<<"  "<<(current_partition.at(0).at(1).size())<<endl;
     while (i < current_partition.size()){
+        cout<<i<<endl;
         unsigned int record = 0;
         int init;
         string temp;temp.clear();
         int a=0,b=0;
         while(a <current_partition.at(i).at(0).size() && b <current_partition.at(i).at(1).size()){
+            //cout<<"a "<<a<<" b "<<b<<endl;
             if(current_partition.at(i).at(0).at(a) < current_partition.at(i).at(1).at(b)){
                 if(std::find(same.begin(), same.end(), current_partition.at(i).at(0).at(a)) != same.end()){
                     if(temp.empty()){
@@ -32,6 +25,7 @@ void core::build_table(int now,const vector<int> same,const map<int, bipartition
                             temp.push_back('1');
                     }
                 }
+                //cout<<temp<<endl;
                 a++;
             }
             else{
@@ -47,10 +41,12 @@ void core::build_table(int now,const vector<int> same,const map<int, bipartition
                             temp.push_back('1');
                     }
                 }
+                //cout<<temp<<endl;
                 b++;
             }
         }
         while (a < current_partition.at(i).at(0).size()){
+            //cout<<"a "<<a<<" b "<<b<<endl;
             if(std::find(same.begin(), same.end(), current_partition.at(i).at(0).at(a)) != same.end()){
                 if(temp.empty()){
                     init = 0;
@@ -63,9 +59,11 @@ void core::build_table(int now,const vector<int> same,const map<int, bipartition
                         temp.push_back('1');
                 }
             }
+            //cout<<temp<<endl;
             a++;
         }
         while (b < current_partition.at(i).at(1).size()){
+            //cout<<"a "<<a<<" b "<<b<<endl;
             if(std::find(same.begin(), same.end(), current_partition.at(i).at(1).at(b)) != same.end()){
                 if(temp.empty()){
                     init = 1;
@@ -78,28 +76,17 @@ void core::build_table(int now,const vector<int> same,const map<int, bipartition
                         temp.push_back('1');
                 }
             }
+            //cout<<temp<<endl;
             b++;
         }
-        temp.push_back('\0');
         cout<<temp<<endl;
+        make_encode(encode_on_partition,encode_on_partition_inverse,current_snp_movement,i,temp);
         int movement_count = 0;
         if(i != 0)
             movement_count += 1;
-        unsigned key = toInt(temp);
-        if(flag != 0) {
-            //previous_table
-            if ( previous_table.find(key) == previous_table.end() ) {
-                // not found
-                table.insert(pair<unsigned int , int>(key,-1));
-            } 
-            else {
-                // found
-                table.at(key) += movement_count;
-            }
-        }
-        else{
-            table.insert(pair<unsigned int , int>(key,movement_count));
-        }
+
+        table.insert(pair<string, int>(temp,movement_count));
+
         i++;
     }
     

@@ -1,6 +1,7 @@
 #include "core.h"
-void core::partition(int snp_positon,map<int, bipartition> &snp_partition){
+void core::partition(int snp_positon,map<int, bipartition> &snp_partition ,map<int, int> &now_snp_movement){
     map<int, bipartition> now_snp; //store all partition
+    
     int j=0;
     int i=0;
     int k=snp_positon;
@@ -20,10 +21,12 @@ void core::partition(int snp_positon,map<int, bipartition> &snp_partition){
             i++;
         }
         if(j==0){
+            now_snp_movement.insert(pair<int, int>(j,0));
             j++;
             continue;
         }  
         else{
+            now_snp_movement.insert(pair<int, int>(j,1));
             if((reads_on_SNP.at(all_snp.at(k)).at(j-1).value)=='0'){
                 now_snp.at(j).at(1).push_back(reads_on_SNP.at(all_snp.at(k)).at(j-1).read_name); 
                 int iter=0;
